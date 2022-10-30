@@ -1,9 +1,10 @@
-import React, { createContext, useContext, useMemo, useState } from "react";
+import React, { createContext, useContext, useMemo, useReducer, useState } from "react";
 import {
   Todo as TodoType,
   TodoContext as TodoContextType,
   Filter,
 } from "../../types";
+import { todosReducer, INITIAL_TODOS } from "../store/todosStore";
 
 const TodosContext = createContext<TodoContextType | null>(null);
 
@@ -12,47 +13,26 @@ const TodosProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [filter, setFilter] = useState<Filter | null>(null);
 
-  const [todos, setTodos] = useState<TodoType[]>(
-    JSON.parse(localStorage.getItem("todos") || "[]")
-  );
+  const [todos, dispatch] = useReducer(todosReducer, INITIAL_TODOS);
 
   const addTodo = (todo: TodoType) => {
-    const draft = [todo, ...todos];
-    localStorage.setItem("todos", JSON.stringify(draft));
-    setTodos(draft);
+    dispatch({ type: "ADD_TODO", payload: todo });
   };
 
   const deleteTodo = (id: string) => {
-    const draft = todos.filter((todo) => todo.id != id);
-    localStorage.setItem("todos", JSON.stringify(draft));
-    setTodos(draft);
+    dispatch({ type: "DELETE_TODO", payload: id });
   };
 
-  const toggleComplete = (id: string) => {
-    const draft = todos.map((todo) => {
-      if (todo.id == id) {
-        return {
-          ...todo,
-          completed: !todo.completed,
-        };
-      } else {
-        return todo;
-      }
-    });
-    localStorage.setItem("todos", JSON.stringify(draft));
-    setTodos(draft);
+  const toggleCompleted = (id: string) => {
+    dispatch({ type: "TOGGLE_COMPLETED", payload: id });
   };
 
-  const toggleAllComplete = (completed: boolean) => {
-    const draft = todos.map((todo) => ({ ...todo, completed: completed }));
-    localStorage.setItem("todos", JSON.stringify(draft));
-    setTodos(draft)
+  const toggleAllCompleted = (completed: boolean) => {
+    dispatch({ type: "TOGGLE_ALL_COMPLETED", payload: completed});
   };
 
   const clearCompleted = () => {
-    const draft = todos.filter((todo) => !todo.completed);
-    localStorage.setItem("todos", JSON.stringify(draft));
-    setTodos(draft);
+    dispatch({ type: "CLEAR_COMPLETED" });
   };
 
   const filteredTodos = useMemo(() => {
@@ -73,8 +53,8 @@ const TodosProvider: React.FC<{ children: React.ReactNode }> = ({
         todos,
         addTodo,
         deleteTodo,
-        toggleComplete,
-        toggleAllComplete,
+        toggleCompleted,
+        toggleAllCompleted,
         clearCompleted,
         filteredTodos,
         handleChangeFilter,
@@ -90,8 +70,8 @@ const useTodos = () => {
     todos,
     addTodo,
     deleteTodo,
-    toggleComplete,
-    toggleAllComplete,
+    toggleCompleted,
+    toggleAllCompleted,
     clearCompleted,
     handleChangeFilter,
     filteredTodos,
@@ -102,8 +82,8 @@ const useTodos = () => {
     filteredTodos,
     addTodo,
     deleteTodo,
-    toggleComplete,
-    toggleAllComplete,
+    toggleCompleted,
+    toggleAllCompleted,
     clearCompleted,
     handleChangeFilter,
   };

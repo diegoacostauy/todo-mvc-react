@@ -9,8 +9,8 @@ export type TodoContext = {
   filteredTodos: Todo[],
   addTodo: (todo: Todo) => void;
   deleteTodo: (id: string) => void;
-  toggleComplete: (id: string) => void;
-  toggleAllComplete: (completed: boolean) => void;
+  toggleCompleted: (id: string) => void;
+  toggleAllCompleted: (completed: boolean) => void;
   clearCompleted: () => void;
   handleChangeFilter: (filter: Filter) => void;
 }

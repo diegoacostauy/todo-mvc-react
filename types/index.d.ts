@@ -17,4 +17,12 @@ export type TodoContext = {
 
 export type Status = "All" | "Active" | "Completed";
 
+export type Action =
+  | { type: "ADD_TODO"; payload: TodoType }
+  | { type: "DELETE_TODO"; payload: string }
+  | { type: "TOGGLE_COMPLETED"; payload: string }
+  | { type: "TOGGLE_ALL_COMPLETED"; payload: boolean }
+  | { type: "CLEAR_COMPLETED" };
+
+
 export type Filter = (todo: Todo) => boolean

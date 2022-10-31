@@ -1,14 +1,8 @@
 
 import {
+  Action,
   Todo as TodoType,
 } from "../../types";
-
-type Action =
-  | { type: "ADD_TODO"; payload: TodoType }
-  | { type: "DELETE_TODO"; payload: string }
-  | { type: "TOGGLE_COMPLETED"; payload: string }
-  | { type: "TOGGLE_ALL_COMPLETED"; payload: boolean }
-  | { type: "CLEAR_COMPLETED" };
 
 const INITIAL_TODOS = JSON.parse(localStorage.getItem("todos") || "[]");
 
